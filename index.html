@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Redondeo de Números</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .game-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        input, button {
+            font-size: 16px;
+            margin: 10px 0;
+            padding: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #feedback {
+            font-weight: bold;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Juego de Redondeo de Números</h1>
+        <p id="numero"></p>
+        <p id="orden"></p>
+        <input type="number" id="respuesta" placeholder="Tu respuesta">
+        <button onclick="verificarRespuesta()">Comprobar</button>
+        <p id="feedback"></p>
+        <p id="puntuacion"></p>
+    </div>
+
+    <script>
+        let numero, ordenActual, puntuacion = 0;
+        const ordenes = ['decenas', 'centenas', 'millares', 'decenas de millar'];
+
+        function generarNumero() {
+            return Math.floor(Math.random() * 99001) + 1000; // Número entre 1000 y 100000
+        }
+
+        function generarOrden() {
+            return ordenes[Math.floor(Math.random() * ordenes.length)];
+        }
+
+        function iniciarJuego() {
+            numero = generarNumero();
+            ordenActual = generarOrden();
+            document.getElementById('numero').textContent = `Redondea el número: ${numero.toLocaleString()}`;
+            document.getElementById('orden').textContent = `a ${ordenActual === 'decenas de millar' ? 'las' : 'los'} ${ordenActual} más ${ordenActual === 'decenas de millar' ? 'cercanas' : 'cercanos'}`;
+            document.getElementById('respuesta').value = '';
+            document.getElementById('feedback').textContent = '';
+        }
+
+        function redondear(num, ord) {
+            const factor = ord === 'decenas' ? 10 : 
+                           ord === 'centenas' ? 100 : 
+                           ord === 'millares' ? 1000 : 10000;
+            return Math.round(num / factor) * factor;
+        }
+
+        function verificarRespuesta() {
+            const respuesta = parseInt(document.getElementById('respuesta').value);
+            const respuestaCorrecta = redondear(numero, ordenActual);
+            if (respuesta === respuestaCorrecta) {
+                document.getElementById('feedback').textContent = '¡Correcto! 🎉';
+                document.getElementById('feedback').style.color = 'green';
+                puntuacion++;
+                setTimeout(iniciarJuego, 1500);
+            } else {
+                document.getElementById('feedback').textContent = `Incorrecto. La respuesta correcta es ${respuestaCorrecta.toLocaleString()}.`;
+                document.getElementById('feedback').style.color = 'red';
+            }
+            document.getElementById('puntuacion').textContent = `Puntuación: ${puntuacion}`;
+        }
+
+        iniciarJuego();
+    </script>
+</body>
+</html>
